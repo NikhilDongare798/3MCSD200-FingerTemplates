@@ -1,0 +1,80 @@
+Imports CgtFpAccessCSD200Dotnet
+Imports System.Drawing.Image
+
+------------------------------------------------
+//create instnace of 
+Dim Fingmsn As New CgtFpAccessCSD200Dotnet.MMMCogentCSD200APIs
+
+
+//Initialization
+
+Try
+            If Not Fingmsn.isDeviceConnected() Then
+                MessageBox.Show("please connect Device...")
+                Return
+            End If
+            If Not Fingmsn.isDeviceInitialized() Then
+                Dim nRc As Integer = Fingmsn.initializeScanner()
+
+                If nRc <> CSD200APICodes.SUCCESS Then
+                    MessageBox.Show("3M Cogent CSD200 scanner initialization failed. Error Code: " & nRc, "3M Cogent CSD200")
+                    Return
+                End If
+            End If
+            MessageBox.Show("Initialization Successful", "3M Cogent CSD200")
+
+
+        Catch ex As Exception
+            MessageBox.Show(ex.Message)
+        End Try
+-----------------------------
+//Capture Finger Template
+ Dim img1 As System.Byte() = Nothing
+ Dim img2 As System.Byte() = Nothing
+
+Fingmsn.captureFP(1500, img1, 20, 20, 10, img2)
+By Passing as Parameter---Public Function captureFP(ByVal captureTimeOutMillis As Integer, ByRef captureBytes() As Byte, ByRef width As Integer, ByRef height As Integer, ByRef nfiq As Integer, ByRef isoTemplateBytes() As Byte) As Integer
+
+//Storing Templates as Byte into text file for sample
+
+ Dim pathNew As String = "D:\Nikhil\Anik1.TAS"
+            Using fsNew As FileStream = New FileStream(pathNew, _
+             FileMode.Create, FileAccess.Write)
+                fsNew.Write(img2, 0, l)
+            End Using
+--------------------------------------------
+
+// For Comparing Finger Templates From Storage Textfile
+
+Dim hdc As Integer = GetPixelFormatSize(0)
+        Dim img As Boolean
+        Dim img1 As System.Byte() = Nothing
+        'Dim img2 As System.Byte() = Nothing
+
+        MessageBox.Show("Please Put the Finger")
+        CgtFpAccessCSD200Dotnet.CSD200Wrapper.CG4_Capture_Start(hdc, img)
+        nk1.captureFP(5000, img1, 20, 20, 10, img2)
+
+        Dim nik As Object
+        Dim arr As Array = Nothing
+        Dim rj As System.Array
+        Dim kj As System.Array = img2
+        Dim m As Integer = kj.Length
+
+\\\Converting TextFile to Byte To Compare FingerTemplates
+
+        Dim filepath As String = "D:\Nikhil\Anik1.TAS"
+        Dim fs As System.IO.FileStream = New System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read)
+        Dim br As System.IO.BinaryReader = New System.IO.BinaryReader(fs)
+        Dim data() As Byte = br.ReadBytes(CType(fs.Length, Integer))
+     
+//matching templates
+
+        If Fingmsn.matchTemplates(img2, data) = True Then
+            MessageBox.Show("thank you")
+        Else
+            MessageBox.Show("Please Try Again")
+        End If
+----------------------------------
+
+
